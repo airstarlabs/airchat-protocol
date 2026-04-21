@@ -1,0 +1,126 @@
+syntax = "proto3";
+package airchat.tenant;
+
+option go_package = "github.com/airstarlabs/airchat-protocol/tenant";
+
+// NOTE: this module uses idiomatic PascalCase for messages and services,
+// unlike the legacy openim-derived modules which use camelCase. New
+// AirChat modules follow Go/Protobuf conventions; legacy modules stay
+// as-is to keep client SDKs stable.
+
+// Plan gates features and quotas per tenant.
+enum Plan {
+  PLAN_UNSPECIFIED = 0;
+  PLAN_TRIAL       = 1;
+  PLAN_PRO         = 2;
+  PLAN_ENTERPRISE  = 3;
+}
+
+// Status is the tenant lifecycle state.
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_ACTIVE      = 1;
+  STATUS_SUSPENDED   = 2;
+  STATUS_DELETED     = 3;
+}
+
+// TenantView is the public read-only shape of a tenant.
+//
+// SecretKey fingerprint is included on every read; the raw SecretKey
+// bytes only ever appear in CreateTenantResp and RotateSecretResp.
+message TenantView {
+  uint32 app_id                  = 1;
+  string name                    = 2;
+  Plan   plan                    = 3;
+  Status status                  = 4;
+  // 8-byte hex prefix of SHA-256 over the active SecretKey. Suitable
+  // for audit logs and change detection; cannot be used to forge a
+  // UserSig.
+  string secret_key_fingerprint  = 5;
+  bool   has_prev_secret         = 6;
+  // Unix seconds, or 0 if not applicable.
+  int64  prev_expire_at          = 7;
+  int64  created_at              = 8;
+  int64  updated_at              = 9;
+}
+
+// ---------- Tenant CRUD ----------------------------------------------------
+
+message CreateTenantReq {
+  string name = 1;
+  Plan   plan = 2;
+}
+
+message CreateTenantResp {
+  TenantView tenant     = 1;
+  // Raw SecretKey bytes. The client MUST store these immediately; the
+  // server will never return them again.
+  bytes      secret_key = 2;
+}
+
+message GetTenantReq  { uint32 app_id = 1; }
+message GetTenantResp { TenantView tenant = 1; }
+
+message ListTenantsReq  {}
+message ListTenantsResp { repeated TenantView tenants = 1; }
+
+message SuspendTenantReq  { uint32 app_id = 1; }
+message SuspendTenantResp { TenantView tenant = 1; }
+
+message ResumeTenantReq  { uint32 app_id = 1; }
+message ResumeTenantResp { TenantView tenant = 1; }
+
+message DeleteTenantReq  { uint32 app_id = 1; }
+message DeleteTenantResp {}
+
+message RotateSecretReq  { uint32 app_id = 1; }
+message RotateSecretResp {
+  TenantView tenant     = 1;
+  // The NEW SecretKey. The previous one remains valid for
+  // RotationGracePeriod (7 days by default) on the server side.
+  bytes      secret_key = 2;
+}
+
+// ---------- UserSig --------------------------------------------------------
+
+message SignUserSigReq {
+  uint32 app_id      = 1;
+  string user_id     = 2;
+  // Seconds. If 0 the server applies DefaultUserSigTTL (7 days).
+  int64  ttl_seconds = 3;
+}
+
+message SignUserSigResp {
+  string user_sig   = 1;
+  int64  expires_at = 2;  // Unix seconds
+}
+
+message VerifyUserSigReq {
+  uint32 app_id   = 1;
+  string user_id  = 2;
+  string user_sig = 3;
+}
+
+// VerifyUserSigResp. A UserSig-failure (bad signature, expired, wrong
+// user) is represented as valid=false rather than a gRPC error — that
+// keeps "invalid token" distinct from "tenant not found" or other
+// operational faults.
+message VerifyUserSigResp {
+  bool  valid      = 1;
+  int64 issued_at  = 2;  // Unix seconds; 0 if invalid
+  int64 expire     = 3;  // Seconds of validity; 0 if invalid
+}
+
+// ---------- Service --------------------------------------------------------
+
+service Tenant {
+  rpc CreateTenant(CreateTenantReq)     returns (CreateTenantResp);
+  rpc GetTenant(GetTenantReq)           returns (GetTenantResp);
+  rpc ListTenants(ListTenantsReq)       returns (ListTenantsResp);
+  rpc SuspendTenant(SuspendTenantReq)   returns (SuspendTenantResp);
+  rpc ResumeTenant(ResumeTenantReq)     returns (ResumeTenantResp);
+  rpc DeleteTenant(DeleteTenantReq)     returns (DeleteTenantResp);
+  rpc RotateSecret(RotateSecretReq)     returns (RotateSecretResp);
+  rpc SignUserSig(SignUserSigReq)       returns (SignUserSigResp);
+  rpc VerifyUserSig(VerifyUserSigReq)   returns (VerifyUserSigResp);
+}
