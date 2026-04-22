@@ -133,19 +133,19 @@ func (Status) EnumDescriptor() ([]byte, []int) {
 // bytes only ever appear in CreateTenantResp and RotateSecretResp.
 type TenantView struct {
 	state  protoimpl.MessageState `protogen:"open.v1"`
-	AppId  uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
-	Name   string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Plan   Plan                   `protobuf:"varint,3,opt,name=plan,proto3,enum=airchat.tenant.Plan" json:"plan,omitempty"`
-	Status Status                 `protobuf:"varint,4,opt,name=status,proto3,enum=airchat.tenant.Status" json:"status,omitempty"`
+	AppId  uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
+	Name   string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name"`
+	Plan   Plan                   `protobuf:"varint,3,opt,name=plan,proto3,enum=airchat.tenant.Plan" json:"plan"`
+	Status Status                 `protobuf:"varint,4,opt,name=status,proto3,enum=airchat.tenant.Status" json:"status"`
 	// 8-byte hex prefix of SHA-256 over the active SecretKey. Suitable
 	// for audit logs and change detection; cannot be used to forge a
 	// UserSig.
-	SecretKeyFingerprint string `protobuf:"bytes,5,opt,name=secret_key_fingerprint,json=secretKeyFingerprint,proto3" json:"secret_key_fingerprint,omitempty"`
-	HasPrevSecret        bool   `protobuf:"varint,6,opt,name=has_prev_secret,json=hasPrevSecret,proto3" json:"has_prev_secret,omitempty"`
+	SecretKeyFingerprint string `protobuf:"bytes,5,opt,name=secret_key_fingerprint,json=secretKeyFingerprint,proto3" json:"secret_key_fingerprint"`
+	HasPrevSecret        bool   `protobuf:"varint,6,opt,name=has_prev_secret,json=hasPrevSecret,proto3" json:"has_prev_secret"`
 	// Unix seconds, or 0 if not applicable.
-	PrevExpireAt  int64 `protobuf:"varint,7,opt,name=prev_expire_at,json=prevExpireAt,proto3" json:"prev_expire_at,omitempty"`
-	CreatedAt     int64 `protobuf:"varint,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     int64 `protobuf:"varint,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	PrevExpireAt  int64 `protobuf:"varint,7,opt,name=prev_expire_at,json=prevExpireAt,proto3" json:"prev_expire_at"`
+	CreatedAt     int64 `protobuf:"varint,8,opt,name=created_at,json=createdAt,proto3" json:"created_at"`
+	UpdatedAt     int64 `protobuf:"varint,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -245,8 +245,8 @@ func (x *TenantView) GetUpdatedAt() int64 {
 
 type CreateTenantReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Plan          Plan                   `protobuf:"varint,2,opt,name=plan,proto3,enum=airchat.tenant.Plan" json:"plan,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	Plan          Plan                   `protobuf:"varint,2,opt,name=plan,proto3,enum=airchat.tenant.Plan" json:"plan"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -297,10 +297,10 @@ func (x *CreateTenantReq) GetPlan() Plan {
 
 type CreateTenantResp struct {
 	state  protoimpl.MessageState `protogen:"open.v1"`
-	Tenant *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant"`
 	// Raw SecretKey bytes. The client MUST store these immediately; the
 	// server will never return them again.
-	SecretKey     []byte `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`
+	SecretKey     []byte `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -351,7 +351,7 @@ func (x *CreateTenantResp) GetSecretKey() []byte {
 
 type GetTenantReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -395,7 +395,7 @@ func (x *GetTenantReq) GetAppId() uint32 {
 
 type GetTenantResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -475,7 +475,7 @@ func (*ListTenantsReq) Descriptor() ([]byte, []int) {
 
 type ListTenantsResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tenants       []*TenantView          `protobuf:"bytes,1,rep,name=tenants,proto3" json:"tenants,omitempty"`
+	Tenants       []*TenantView          `protobuf:"bytes,1,rep,name=tenants,proto3" json:"tenants"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -519,7 +519,7 @@ func (x *ListTenantsResp) GetTenants() []*TenantView {
 
 type SuspendTenantReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -563,7 +563,7 @@ func (x *SuspendTenantReq) GetAppId() uint32 {
 
 type SuspendTenantResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -607,7 +607,7 @@ func (x *SuspendTenantResp) GetTenant() *TenantView {
 
 type ResumeTenantReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -651,7 +651,7 @@ func (x *ResumeTenantReq) GetAppId() uint32 {
 
 type ResumeTenantResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant        *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -695,7 +695,7 @@ func (x *ResumeTenantResp) GetTenant() *TenantView {
 
 type DeleteTenantReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -775,7 +775,7 @@ func (*DeleteTenantResp) Descriptor() ([]byte, []int) {
 
 type RotateSecretReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -819,10 +819,10 @@ func (x *RotateSecretReq) GetAppId() uint32 {
 
 type RotateSecretResp struct {
 	state  protoimpl.MessageState `protogen:"open.v1"`
-	Tenant *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant,omitempty"`
+	Tenant *TenantView            `protobuf:"bytes,1,opt,name=tenant,proto3" json:"tenant"`
 	// The NEW SecretKey. The previous one remains valid for
 	// RotationGracePeriod (7 days by default) on the server side.
-	SecretKey     []byte `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`
+	SecretKey     []byte `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -873,10 +873,10 @@ func (x *RotateSecretResp) GetSecretKey() []byte {
 
 type SignUserSigReq struct {
 	state  protoimpl.MessageState `protogen:"open.v1"`
-	AppId  uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
-	UserId string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AppId  uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
+	UserId string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id"`
 	// Seconds. If 0 the server applies DefaultUserSigTTL (7 days).
-	TtlSeconds    int64 `protobuf:"varint,3,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds,omitempty"`
+	TtlSeconds    int64 `protobuf:"varint,3,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -934,8 +934,8 @@ func (x *SignUserSigReq) GetTtlSeconds() int64 {
 
 type SignUserSigResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserSig       string                 `protobuf:"bytes,1,opt,name=user_sig,json=userSig,proto3" json:"user_sig,omitempty"`
-	ExpiresAt     int64                  `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"` // Unix seconds
+	UserSig       string                 `protobuf:"bytes,1,opt,name=user_sig,json=userSig,proto3" json:"user_sig"`
+	ExpiresAt     int64                  `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at"` // Unix seconds
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -986,9 +986,9 @@ func (x *SignUserSigResp) GetExpiresAt() int64 {
 
 type VerifyUserSigReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	UserSig       string                 `protobuf:"bytes,3,opt,name=user_sig,json=userSig,proto3" json:"user_sig,omitempty"`
+	AppId         uint32                 `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id"`
+	UserSig       string                 `protobuf:"bytes,3,opt,name=user_sig,json=userSig,proto3" json:"user_sig"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1050,9 +1050,9 @@ func (x *VerifyUserSigReq) GetUserSig() string {
 // operational faults.
 type VerifyUserSigResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Valid         bool                   `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
-	IssuedAt      int64                  `protobuf:"varint,2,opt,name=issued_at,json=issuedAt,proto3" json:"issued_at,omitempty"` // Unix seconds; 0 if invalid
-	Expire        int64                  `protobuf:"varint,3,opt,name=expire,proto3" json:"expire,omitempty"`                     // Seconds of validity; 0 if invalid
+	Valid         bool                   `protobuf:"varint,1,opt,name=valid,proto3" json:"valid"`
+	IssuedAt      int64                  `protobuf:"varint,2,opt,name=issued_at,json=issuedAt,proto3" json:"issued_at"` // Unix seconds; 0 if invalid
+	Expire        int64                  `protobuf:"varint,3,opt,name=expire,proto3" json:"expire"`                     // Seconds of validity; 0 if invalid
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
